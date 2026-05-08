@@ -4361,7 +4361,7 @@ void bakeBricks() {
 						case "next": bakeNext(); break;
 						case "shrunkenhead": bakeShrunkenHead(); break;
 						case "maximizer": bakeMaximizer(); break;
-						case "statemodifiers": bakeStateModifiers(); break;
+						case "statemodifiers": bake_statemodifiers(); break;
 
 						// Reserved words
 						case "helpers": case "update": break;

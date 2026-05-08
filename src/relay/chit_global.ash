@@ -778,6 +778,39 @@ void br(buffer buf) {
 }
 
 /*****************************************************
+	Brick functions
+*****************************************************/
+string[int] brickStack;
+
+void brickStart(buffer brick, string name, string id) {
+	if(chitBricks contains id) {
+		print("Tried to bake brick " + id + ", but we already finished that one!", "red");
+	}
+	brickStack[brickStack.count()] = id;
+
+	brick.tagStart('table', attrmap {
+		'id': 'chit_' + id,
+		'class': 'chit_brick nospace',
+	});
+	brick.tagStart('tbody');
+	brick.tagStart('tr');
+	brick.tagStart('th', attrmap {
+		'class': 'label',
+		'colspan': '4',
+	});
+	brick.append(name);
+	brick.tagFinish('th');
+	brick.tagFinish('tr');
+}
+
+void brickFinish(buffer brick) {
+	brick.tagFinish('tbody');
+	brick.tagFInish('table');
+
+	chitBricks[remove brickStack[brickStack.count() - 1]] = brick;
+}
+
+/*****************************************************
 	Picker functions
 *****************************************************/
 string[int] pickerStack;

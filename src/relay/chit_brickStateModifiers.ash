@@ -1,6 +1,6 @@
 // <p><b><font size=2>Adventure Modifiers:</font></b><br><div style='text-align: left'><small>You are temporarily in the mostly-combatless world of Clara's Bell.<br>A sniper is guiding you out of trouble.</small></div><center><p><b><font size=2>Misc. Modifiers:</font></b><br><div style='text-align: left'><small>Your skin will be really tough for 5 more fights</small></div><center><p><b><font size=2>Effects:
 
-void bakeStateModifiers() {
+void bake_statemodifiers() {
 	string[string][int] sections;
 	int lines = 0;
 
@@ -21,21 +21,22 @@ void bakeStateModifiers() {
 
 	buffer result;
 
-	result.append('<table id="chit_stateModifiers" class="chit_brick nospace"><tbody>');
-	result.append('<tr><th class="label" colspan="2">State Modifiers</th></tr>');
+	result.brickStart('State Modifiers', 'statemodifiers');
 
 	foreach section in sections {
-		result.append('<tr class="sectionHeader"><td colspan="2">');
+		result.tagStart('tr', attrmap { 'class': 'sectionHeader' });
+		result.tagStart('td', attrmap { 'colspan': '4' });
 		result.append(section);
-		result.append('</td></tr>');
+		result.tagFinish('td');
+		result.tagFinish('tr');
 		foreach i, line in sections[section] {
-			result.append('<tr><td colspan="2">');
+			result.tagStart('tr');
+			result.tagStart('td', attrmap { 'colspan': '4' });
 			result.append(line);
-			result.append('</td></tr>');
+			result.tagFinish('td');
+			result.tagFinish('tr');
 		}
 	}
 
-	result.append('</tbody></table>');
-
-	chitBricks["statemodifiers"] = result.to_string();
+	result.brickFinish();
 }
