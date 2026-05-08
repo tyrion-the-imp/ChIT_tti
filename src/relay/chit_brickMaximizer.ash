@@ -82,7 +82,7 @@ string[string] recommendedMaximizerStrings() {
 	return res;
 }
 
-void bakeMaximizer() {
+void bake_maximizer() {
 	buffer result;
 
 	string[string] recommendations = recommendedMaximizerStrings();
@@ -115,102 +115,141 @@ void bakeMaximizer() {
 		maxFilters = cvars["chit.maximizer.filters"];
 	}
 
-	result.append('<table id="chit_maximizer" class="chit_brick nospace"><tbody>');
-	result.append('<tr><th class="label" colspan="5">Maximizer');
-	if(fields contains "tomax") {
-		result.append(' (Current score: ');
-		result.append(current_maximizer_score(fields["tomax"]).to_string('%,.2f'));
-		result.append(')');
+	string displayName = 'Maximizer';
+	if(fields contains 'tomax') {
+		displayName += ' (Current score: '
+			+ current_maximizer_score(fields['tomax']).to_string('%,.2f') + ')';
 	}
-	result.append('</th></tr>');
-	result.append('<form action="./charpane.php">');
-	result.append('<tr><td class="info" colspan="3">');
-	result.append('<input type="hidden" name="autoopen" value="maximizer" />');
-	result.append('<input type="text" name="tomax" value="');
-	if(fields contains "tomax") {
-		result.append(fields["tomax"]);
-	} else {
-		result.append(cvars["chit.maximizer.max"]);
-	}
-	result.append('"');
+	result.brickStart(displayName, 'maximizer', '5');
+	result.tagStart('form', attrmap { 'action': './charpane.php' });
+	result.tagStart('tr');
+	result.tagStart('td', attrmap { 'class': 'info', 'colspan': '3' });
+	result.tagSelfClosing('input', attrmap {
+		'type': 'hidden',
+		'name': 'autoopen',
+		'value': 'maximizer',
+	});
+	result.tagSelfClosing('input', attrmap {
+		'type': 'text',
+		'name': 'tomax',
+		'value': fields contains 'tomax' ? fields['tomax'] : cvars['chit.maximizer.max'],
+		'list': recommendations.count() > 0 ? 'maxsuggestions' : '',
+	});
 	if(recommendations.count() > 0) {
-		result.append(' list="maxsuggestions"');
-	}
-	result.append(' />');
-	if(recommendations.count() > 0) {
-		result.append('<datalist id="maxsuggestions">');
+		result.tagStart('datalist', attrmap { 'id': 'maxsuggestions' });
 		foreach str, reason in recommendations {
-			result.append('<option value="');
-			result.append(str);
-			result.append('" label="');
-			result.append(reason);
-			result.append('" />');
+			result.tagSelfClosing('option', attrmap {
+				'value': str,
+				'label': reason,
+			});
 		}
-		result.append('</datalist>');
+		result.tagFinish('datalist');
 	}
-	result.append('</td><td>');
-	result.append('<button type="submit" name="action" value="maximize">Max</button>');
-	result.append('</td><td>');
-	result.append('<input type="radio" id="maxonhand" name="maxequipwhere" value="onhand"');
-	if(equipScope == 0) {
-		result.append(' checked');
-	}
-	result.append(' />');
-	result.append('<label for="maxonhand">On hand</label>');
-	result.append('</td></tr>');
-	result.append('<tr><td>');
+	result.tagFinish('td');
+	result.tagStart('td');
+	result.tagStart('button', attrmap {
+		'type': 'submit',
+		'name': 'action',
+		'value': 'maximize',
+	});
+	result.append('Max');
+	result.tagFinish('button');
+	result.tagFinish('td');
+	result.tagStart('td');
+	result.tagSelfClosing('input', attrmap {
+		'type': 'radio',
+		'id': 'maxonhand',
+		'name': 'maxequipwhere',
+		'value': 'onhand',
+		'checked': equipScope == 0 ? 'TRUE' : '',
+	});
+	result.tagStart('label', attrmap { 'for': 'maxonhand' });
+	result.append('On hand');
+	result.tagFinish('label');
+	result.tagFinish('td');
+	result.tagFinish('tr');
+	result.tagStart('tr');
+	result.tagStart('td');
 	int count = 0;
 	foreach filter in allFilters {
-		result.append('<input type="checkbox"');
-		if(maxFilters.simple_list_contains(filter, ',')) {
-			result.append(' checked');
-		}
-		result.append(' name="max');
+		result.tagSelfClosing('input', attrmap {
+			'type': 'checkbox',
+			'checked': maxFilters.simple_list_contains(filter, ',') ? 'TRUE' : '',
+			'name': 'max' + filter,
+			'id': 'max' + filter,
+			'value': 'true',
+		});
+		result.tagStart('label', attrmap { 'for': 'max' + filter });
 		result.append(filter);
-		result.append('" id="max');
-		result.append(filter);
-		result.append('" value="true" />');
-		result.append('<label for="max');
-		result.append(filter);
-		result.append('">');
-		result.append(filter);
-		result.append('</label>');
-		result.append('</td><td>');
+		result.tagFinish('label');
+		result.tagFinish('td');
+		result.tagStart('td');
 		count += 1;
 		if(count == 4) {
-			result.append('<input type="radio" id="maxcreatable" name="maxequipwhere" value="create"');
-			if(equipScope == 1) {
-				result.append(' checked');
-			}
-			result.append(' />');
-			result.append('<label for="maxcreatable">Create</label>');
-			result.append('</td></tr><tr><td>');
+			result.tagSelfClosing('input', attrmap {
+				'type': 'radio',
+				'id': 'maxcreatable',
+				'name': 'maxequipwhere',
+				'value': 'create',
+				'checked': equipScope == 1 ? 'TRUE' : '',
+			});
+			result.tagStart('label', attrmap { 'for': 'maxcreatable' });
+			result.append('Create');
+			result.tagFinish('label');
+			result.tagFinish('td');
+			result.tagFinish('tr');
+			result.tagStart('tr');
+			result.tagStart('td');
 		}
 	}
-	result.append('<input type="radio" id="maxpullbuy" name="maxequipwhere" value="pullbuy"');
-	if(equipScope == 2) {
-		result.append(' checked');
-	}
-	result.append(' />');
-	result.append('<label for="maxpullbuy">Pull/Buy</label>');
-	result.append('</td></tr>');
-	result.append('</form>');
+	result.tagSelfClosing('input', attrmap {
+		'type': 'radio',
+		'id': 'maxpullbuy',
+		'name': 'maxequipwhere',
+		'value': 'pullbuy',
+		'checked': equipScope == 2 ? 'TRUE' : '',
+	});
+	result.tagStart('label', attrmap { 'for': 'maxpullbuy' });
+	result.append('Pull/Buy');
+	result.tagFinish('label');
+	result.tagFinish('td');
+	result.tagFinish('tr');
+	result.tagFinish('form');
 
 	if(fields contains "tomax") {
 		matcher m = create_matcher("^\\s*([\\d\\.]+)\\s*[Mm][Aa][Xx]\\s*,", fields["tomax"]);
 		if(m.find()) {
 			float maxThreshold = m.group(1).to_float();
 			if(current_maximizer_score(fields["tomax"]) >= maxThreshold) {
-				result.append('<tr><td colspan="5"><b>You already met your goal! Don\'t waste anything!</b></td></tr>');
+				result.tagStart('tr');
+				result.tagStart('td', attrmap { 'colspan': '5' });
+				result.tagStart('b');
+				result.append('You already met your goal! Don\'t waste anything!');
+				result.tagFinish('b');
+				result.tagFinish('td');
+				result.tagFinish('tr');
 			}
 		}
-		result.append('<tr class="darkrow"><td>Icon</td><td>Commmand</td><td>Score</td><td>Info</td><td>Go!</td></tr>');
+		result.tagStart('tr', attrmap { 'class': 'darkrow' });
+		result.tagStart('td');
+		result.append('Icon');
+		result.tagFinish('td');
+		result.tagStart('td');
+		result.append('Command');
+		result.tagFinish('td');
+		result.tagStart('td');
+		result.append('Score');
+		result.tagFinish('td');
+		result.tagStart('td');
+		result.append('Info');
+		result.tagFinish('td');
+		result.tagStart('td');
+		result.append('Go!');
+		result.tagFinish('td');
+		result.tagFinish('tr');
 		foreach i,plan in maximizeOut {
-			result.append('<tr');
-			if(i % 2 == 1) {
-				result.append(' class="darkrow"');
-			}
-			result.append('><td class="smallicon">');
+			result.tagStart('tr', attrmap { 'class': i % 2 == 1 ? 'darkrow' : '' });
+			result.tagStart('td', attrmap { 'class': 'smallicon' });
 			chit_info effInfo = getEffectInfo(plan.effect);
 			if(plan.item != $item[none] && plan.effect == $effect[none]) {
 				result.addItemIcon(plan.item, '', true);
@@ -221,11 +260,14 @@ void bakeMaximizer() {
 			} else if(plan.effect != $effect[none]) {
 				result.addEffectIcon(plan.effect, '', true, '', attrmap {});
 			}
-			result.append('</td><td>');
+			result.tagFinish('td');
+			result.tagStart('td');
 			result.append(plan.display);
-			result.append('</td><td>');
+			result.tagFinish('td');
+			result.tagStart('td');
 			result.append(plan.score.to_string(plan.score % 1 == 0 ? '%.0f' :'%.2f'));
-			result.append('</td><td>');
+			result.tagFinish('td');
+			result.tagStart('td');
 			string after = plan.afterdisplay;
 			matcher afterMatcher = create_matcher('\\(\\+?\\d+\\)\\s*', after);
 			if(afterMatcher.find()) {
@@ -236,30 +278,40 @@ void bakeMaximizer() {
 				after = after.replace_string(afterMatcher.group(0), ')');
 			}
 			result.append(after);
-			result.append('</td><td>');
+			result.tagFinish('td');
+			result.tagStart('td');
 			if(plan.command != '') {
-				result.append('<form action="./charpane.php">');
-				result.append('<input type="hidden" name="autoopen" value="maximizer" />');
-				result.append('<input type="hidden" name="tomax" value="');
-				result.append(fields["tomax"]);
-				result.append('" />');
-				result.append('<input type="hidden" name="cmd" value="');
-				result.append(plan.command);
-				result.append('" />');
-				result.append('<button ');
-				if(plan.command == "") {
-					result.append('disabled ');
-				}
-				result.append('type="submit" name="action" value="cliexec">');
+				result.tagStart('form', attrmap { 'action': './charpane.php' });
+				result.tagSelfClosing('input', attrmap {
+					'type': 'hidden',
+					'name': 'autoopen',
+					'value': 'maximizer',
+				});
+				result.tagSelfClosing('input', attrmap {
+					'type': 'hidden',
+					'name': 'tomax',
+					'value': fields['tomax'],
+				});
+				result.tagSelfClosing('input', attrmap {
+					'type': 'hidden',
+					'name': 'cmd',
+					'value': plan.command,
+				});
+				result.tagStart('button', attrmap {
+					'disabled': plan.command == '' ? 'TRUE' : '',
+					'type': 'submit',
+					'name': 'action',
+					'value': 'cliexec',
+				});
 				string[int] splitDisplay = plan.display.split_string(' ');
 				result.append(splitDisplay[0] == '...or' ? splitDisplay[1] : splitDisplay[0]);
-				result.append('</button></form>');
+				result.tagFinish('button');
+				result.tagFinish('form');
 			}
-			result.append('</td></tr>');
+			result.tagFinish('td');
+			result.tagFinish('tr');
 		}
 	}
 
-	result.append('</tbody></table>');
-
-	chitBricks["maximizer"] = result.to_string();
+	result.brickFinish();
 }

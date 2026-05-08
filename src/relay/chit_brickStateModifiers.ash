@@ -25,13 +25,13 @@ void bake_statemodifiers() {
 
 	foreach section in sections {
 		result.tagStart('tr', attrmap { 'class': 'sectionHeader' });
-		result.tagStart('td', attrmap { 'colspan': '4' });
+		result.tagStart('td');
 		result.append(section);
 		result.tagFinish('td');
 		result.tagFinish('tr');
 		foreach i, line in sections[section] {
 			result.tagStart('tr');
-			result.tagStart('td', attrmap { 'colspan': '4' });
+			result.tagStart('td');
 			result.append(line);
 			result.tagFinish('td');
 			result.tagFinish('tr');

@@ -4360,7 +4360,7 @@ void bakeBricks() {
 						case "robo":		bakeRobo();			break;
 						case "next": bakeNext(); break;
 						case "shrunkenhead": bakeShrunkenHead(); break;
-						case "maximizer": bakeMaximizer(); break;
+						case "maximizer": bake_maximizer(); break;
 						case "statemodifiers": bake_statemodifiers(); break;
 
 						// Reserved words

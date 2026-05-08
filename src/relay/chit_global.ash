@@ -721,10 +721,13 @@ void tagStart(buffer buf, string type, attrmap attrs, boolean selfClosing) {
 		}
 		buf.append(' ');
 		buf.append(attr);
-		buf.append('="');
-		// TODO: Escape " in value
-		buf.append(value);
-		buf.append('"');
+		// for boolean properties
+		if(value != 'TRUE') {
+			buf.append('="');
+			// TODO: Escape " in value
+			buf.append(value);
+			buf.append('"');
+		}
 	}
 	if(selfClosing) {
 		buf.append(' /');
@@ -782,7 +785,7 @@ void br(buffer buf) {
 *****************************************************/
 string[int] brickStack;
 
-void brickStart(buffer brick, string name, string id) {
+void brickStart(buffer brick, string name, string id, string colspan) {
 	if(chitBricks contains id) {
 		print("Tried to bake brick " + id + ", but we already finished that one!", "red");
 	}
@@ -796,11 +799,15 @@ void brickStart(buffer brick, string name, string id) {
 	brick.tagStart('tr');
 	brick.tagStart('th', attrmap {
 		'class': 'label',
-		'colspan': '4',
+		'colspan': colspan,
 	});
 	brick.append(name);
 	brick.tagFinish('th');
 	brick.tagFinish('tr');
+}
+
+void brickStart(buffer brick, string name, string id) {
+	brickStart(brick, name, id, '');
 }
 
 void brickFinish(buffer brick) {
