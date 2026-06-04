@@ -1,5 +1,5 @@
 script "Character Information Toolbox";
-since r28991; // legendary pasta wand
+since r29040; // thrall exp tracking
 import "zlib.ash";
 import "chit_global.ash";
 import "chit_itemInfo.ash";
@@ -1406,7 +1406,13 @@ void pickerThrall() {
 void bakeThrall() {
 	if(my_class() != $class[Pastamancer] || my_path().name == "Nuclear Autumn" || my_path().name == "Pocket Familiars") return;
 	buffer result;
-	void bake(string lvl, string name, string type, string img) {
+	void bake(thrall th) {
+		string lvl = th != $thrall[none] ? th.level.to_string() : "";
+		string name = th != $thrall[none] ? th.name : "No Thrall";
+		string type = th != $thrall[none] ? th.to_string() : "No Thrall";
+		string img = th != $thrall[none] ? th.tinyimage : "blank.gif";
+		int exp = th != $thrall[none] ? th.experience : -1;
+
 		if(to_boolean(cvars["chit.thrall.showname"])) {
 			string temp = name;
 			name = type;
@@ -1444,16 +1450,29 @@ void bakeThrall() {
 				result.append('</span>');
 			}
 			result.append('</a></td>');
+			if(exp >= 0) {
+				int[int] expGoals = { 0, 10, 25, 50, 80, 120, 160, 200, 250, 300, 350 };
+				int expLevel = th.level;
+				if(th == $thrall[Spice Ghost] && get_property("pumpkinSpiceWhorlUsed").to_boolean()) {
+					expLevel -= 3;
+				}
+				if(expLevel < 11) {
+					int prevGoal = expGoals[expLevel - 1];
+					int goal = expGoals[expLevel];
+					int limit = goal - prevGoal;
+					int current = exp - prevGoal;
+					result.append('</tr><tr><td class="progress" colspan="2">');
+					result.progressCustom(current, limit, 'exp to level ' + (th.level + 1), 0, true);
+					result.append('</td>');
+				}
+			}
 		} else {
 			result.append('<td class="info"><a class="chit_launcher" rel="chit_pickerthrall" href="#"><span style="color:blue;font-weight:bold">(Click to Summon a Thrall)</span></a></td>');
 		}
 		result.append('</tr></table>');
 	}
 
-	if(my_thrall() == $thrall[none])
-		bake("", "No Thrall", "No Thrall", "blank.gif");
-	else
-		bake(my_thrall().level, my_thrall().name, my_thrall(), my_thrall().tinyimage);
+	bake(my_thrall());
 	chitBricks["thrall"] = result;
 	pickerThrall();
 }
