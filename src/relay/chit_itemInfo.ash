@@ -1259,7 +1259,7 @@ chit_info getItemInfo(item it, slot relevantSlot, boolean stripHtml, boolean inc
 			break;
 		case $item[industrial fire extinguisher]:
 		case $item[replica industrial fire extinguisher]:
-			info.addDrop(new drop_info('_fireExtinguisherCharge', LIMIT_TOTAL, '%'));
+			info.addDrop(new drop_info('_fireExtinguisherCharge', LIMIT_TOTAL, '% full'));
 			break;
 		case $item[mafia thumb ring]: {
 			int thumbAdvs = get_property('_mafiaThumbRingAdvs').to_int();
