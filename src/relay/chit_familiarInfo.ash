@@ -229,7 +229,7 @@ chit_info getFamiliarInfo(familiar f, slot s, boolean forPopover) {
 	info.image = itemimage(f.image);
 
 	if(isStandardFam) {
-		drop_info[int] drops;
+		drops_info drops;
 
 		switch(f) {
 			case $familiar[none]:
@@ -453,7 +453,6 @@ chit_info getFamiliarInfo(familiar f, slot s, boolean forPopover) {
 				break;
 			}
 			case $familiar[Slimeling]: {
-				drops_info drops;
 				float fullness = to_float(get_property('slimelingFullness'));
 				if(fullness > 0) {
 					drops[drops.count()] = new drop_info('', fullness, 'approx fullness');
