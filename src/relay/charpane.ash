@@ -1,5 +1,5 @@
 script "Character Information Toolbox";
-since r29040; // thrall exp tracking
+since r29083; // cup of 13s
 import "zlib.ash";
 import "chit_global.ash";
 import "chit_itemInfo.ash";

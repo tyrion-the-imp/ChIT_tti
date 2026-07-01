@@ -2132,6 +2132,14 @@ chit_info getItemInfo(item it, slot relevantSlot, boolean stripHtml, boolean inc
 			}
 			break;
 		}
+		case $item[Cup of 13s]: {
+			info.addExtra(extraInfoLink('<b>mix</b> a drink', attrmap {
+				'href': 'inventory.php?pwd=' + my_hash() + '&action=cupof13s',
+				'class': 'visit done',
+				'target': 'mainpane',
+			}));
+			break;
+		}
 	}
 
 	// latte reminder
