@@ -185,11 +185,18 @@ static {
 			case 'item2': return 'Booze Fairy';
 			case 'item3': return 'Candy Fairy';
 			case 'meat0': return 'Leprechaun';
+			case 'meat1': return 'Combat Meat';
 			case 'stat0': return 'Volleyball';
 			case 'stat1': return 'Sombrero';
+			case 'stat2': return 'Combat Stats';
+			case 'stat3': return 'Other Stats';
 			case 'hp1': return '+HP';
 			case 'mp1': return '+MP';
 			case 'underwater': return 'Underwater';
+			case 'other0': return 'Misc Combat';
+			case 'other1': return 'Misc Postcombat';
+			case 'passive': return 'Passive';
+			case 'none': return 'Useless';
 		}
 		return '';
 	}
