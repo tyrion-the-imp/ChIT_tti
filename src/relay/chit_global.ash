@@ -304,6 +304,7 @@ record drop_info {
 	boolean useDropped;
 	int dropped;
 	boolean oneOrNone;
+	boolean propIsRemainingDrops;
 };
 
 typedef drop_info[int] drops_info;
@@ -383,6 +384,9 @@ boolean addDrops(chit_info info, drop_info[int] drops) {
 		else if(drop.propName != '') {
 			dropped = max(get_property(drop.propName).to_int(), 0);
 			limit = drop.limit;
+			if(drop.propIsRemainingDrops) {
+				dropped = max(limit - dropped, 0);
+			}
 			if(dropped == 0) {
 				upDrops(DROPS_ALL, drop);
 			}
