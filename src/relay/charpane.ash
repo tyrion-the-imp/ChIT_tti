@@ -1,5 +1,5 @@
 script "Character Information Toolbox";
-since r29083; // cup of 13s
+since r29095; // cup of 13s gems
 import "zlib.ash";
 import "chit_global.ash";
 import "chit_itemInfo.ash";

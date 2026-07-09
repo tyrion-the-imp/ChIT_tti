@@ -2138,6 +2138,7 @@ chit_info getItemInfo(item it, slot relevantSlot, boolean stripHtml, boolean inc
 				'class': 'visit done',
 				'target': 'mainpane',
 			}));
+			info.addDrop(new drop_info('_cupOf13sJewels', 13, 'shining gem', 'shining gems'));
 			break;
 		}
 	}
