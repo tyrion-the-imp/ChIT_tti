@@ -10,6 +10,7 @@ Please include a screenshot both with and without your change active.
 
 ## Checklist:
 
+- [ ] I have created this Pull Request from start to finish without using any AI tools.
 - [ ] I have performed a self-review of my own code.
 - [ ] I have commented my code, particularly in hard-to-understand areas.
 - [ ] I have based by pull request against the [main branch](https://github.com/loathers/ChIT/tree/main) or have a good reason not to.
